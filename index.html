@@ -1619,7 +1619,7 @@ const contactForm = document.getElementById('contactForm');
 if(contactForm){
   contactForm.addEventListener('submit', async function(e){
     e.preventDefault();
-    const btn = contactForm.querySelector('.fsub');
+    const btn = contactForm.querySelector('.form-submit, .fsub');
     const originalText = btn.innerHTML;
     btn.innerHTML = 'Wysyłanie...';
     btn.disabled = true;
