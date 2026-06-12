@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zagłosuj na promy wiślane</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:     #050F1C;
+  --card:   rgba(255,255,255,0.05);
+  --border: rgba(255,255,255,0.1);
+  --accent: #5AC8C8;
+  --text:   #F5F5F7;
+  --sub:    rgba(245,245,247,0.48);
+  --faint:  rgba(245,245,247,0.2);
+}
+html { background: #050F1C; }
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  background: #050F1C;
+  color: var(--text);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 48px 16px;
+  position: relative;
+}
+
+
+.card {
+  position: relative; z-index: 3;
+  width: 100%; max-width: 520px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(90,200,200,0.2);
+  border-radius: 28px;
+  padding: 32px 44px 32px;
+  display: flex; flex-direction: column;
+  align-items: center; text-align: center;
+  backdrop-filter: blur(32px);
+  -webkit-backdrop-filter: blur(32px);
+  box-shadow: 0 0 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.04), inset 0 1px 0 rgba(255,255,255,0.08);
+  animation: rise 0.85s cubic-bezier(0.22,1,0.36,1) both;
+}
+@keyframes rise {
+  from { opacity:0; transform:translateY(22px) scale(0.97); }
+  to   { opacity:1; transform:translateY(0) scale(1); }
+}
+
+
+.rule { width:100%; height:1px; background:var(--border); margin-bottom:16px; }
+.vote-heading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+.vote-heading-icon {
+  font-size: 2rem;
+  line-height: 1;
+  filter: drop-shadow(0 0 8px rgba(90,200,200,0.6));
+}
+.vote-heading-text {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--text);
+  text-align: center;
+  line-height: 1.25;
+  letter-spacing: 0.02em;
+  margin: 0;
+}
+.vote-heading-text span {
+  color: var(--accent);
+  font-weight: 300;
+  font-style: italic;
+  letter-spacing: 0.06em;
+}
+.tagline {
+  font-size: 1rem; font-weight: 300; font-style: italic;
+  color: var(--sub); line-height: 1.65;
+  max-width: 340px; margin-bottom: 14px;
+}
+.projects { width:100%; display:flex; flex-direction:column; gap:8px; margin-bottom:16px; }
+.project-row {
+  display: flex; align-items: center; gap: 14px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px; padding: 16px 20px; text-align: left;
+}
+.project-badge {
+  flex-shrink: 0; font-size: 0.62rem; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--accent); background: rgba(90,200,200,0.1);
+  border: 1px solid rgba(90,200,200,0.22);
+  border-radius: 7px; padding: 4px 10px; white-space: nowrap;
+}
+.project-name { font-size: 1.1rem; font-weight: 600; color: #FFFFFF; line-height: 1.3; }
+.project-nr   { font-size: 0.75rem; color: var(--accent); margin-top: 2px; font-weight: 500; }
+.countdown {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 16px;
+  width: 100%;
+  flex-wrap: nowrap;
+}
+.countdown-unit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: rgba(90,200,200,0.08);
+  border: 1px solid rgba(90,200,200,0.18);
+  border-radius: 12px;
+  padding: 10px 0;
+  flex: 1;
+  min-width: 0;
+}
+.countdown-num {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1;
+}
+.countdown-label {
+  font-size: 0.58rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--sub);
+  margin-top: 4px;
+}
+.countdown-ended {
+  font-size: 0.85rem;
+  color: var(--sub);
+  font-style: italic;
+  margin-bottom: 28px;
+}
+.vote-btn {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  width: 100%; background: var(--accent); color: #050F1C;
+  font-size: 0.88rem; font-weight: 600; letter-spacing: 0.12em;
+  text-transform: uppercase; text-decoration: none;
+  padding: 20px 32px; border-radius: 16px;
+  transition: opacity 0.2s, transform 0.18s;
+}
+.vote-btn:hover  { opacity: 0.88; }
+.vote-btn:active { transform: scale(0.97); }
+.foot { margin-top: 24px; font-size: 0.7rem; color: rgba(245,245,247,0.18); }
+@media (max-width: 560px) {
+  body { padding: 32px 12px; }
+  .card { padding: 28px 20px 24px; }
+  
+}
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.instr-block {
+  width: 100%;
+  background: rgba(90,200,200,0.06);
+  border: 1px solid rgba(90,200,200,0.15);
+  border-radius: 16px;
+  padding: 22px 20px 20px;
+  margin-top: 16px;
+  text-align: left;
+  box-sizing: border-box;
+}
+.instr-title {
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #5AC8C8;
+  margin-bottom: 14px;
+}
+.instr-list {
+  list-style: none;
+  padding: 0; margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.instr-row {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 10px;
+}
+.instr-n {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(90,200,200,0.12);
+  border: 1px solid rgba(90,200,200,0.3);
+  font-size: 0.62rem;
+  font-weight: 600;
+  color: #5AC8C8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1px;
+}
+.instr-text {
+  font-size: 0.82rem;
+  font-weight: 300;
+  color: rgba(245,245,247,0.55);
+  line-height: 1.5;
+  flex: 1;
+}
+.instr-text b {
+  font-weight: 500;
+  color: #F5F5F7;
+}
+
+
+
+.project-row {
+  align-items: center;
+}
+
+
+.privacy-link {
+  font-size: 0.7rem;
+  color: rgba(245,245,247,0.25);
+  text-decoration: underline;
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-family: inherit;
+  margin-top: 8px;
+  display: inline-block;
+  transition: color 0.2s;
+}
+.privacy-link:hover { color: rgba(245,245,247,0.5); }
+
+.privacy-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  width: 100%; height: 100%;
+  z-index: 9999;
+  background: rgba(4,17,30,0.92);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.privacy-modal {
+  background: #0D2035;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 20px;
+  padding: 36px 32px;
+  max-width: 480px;
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+.privacy-close {
+  position: absolute;
+  top: 16px; right: 18px;
+  background: none;
+  border: none;
+  color: rgba(245,245,247,0.4);
+  font-size: 1.3rem;
+  cursor: pointer;
+  line-height: 1;
+  transition: color 0.2s;
+}
+.privacy-close:hover { color: var(--text); }
+
+.privacy-modal h2 {
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 20px;
+  letter-spacing: 0.02em;
+}
+
+.privacy-modal h3 {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--accent);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin: 18px 0 6px;
+}
+
+.privacy-modal p {
+  font-size: 0.8rem;
+  font-weight: 300;
+  color: rgba(245,245,247,0.55);
+  line-height: 1.7;
+}
+
+.privacy-modal a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+
+.vitpat {
+  margin-top: 8px;
+  font-size: 0.65rem;
+  color: rgba(245,245,247,0.15);
+  letter-spacing: 0.04em;
+}
+.vitpat a {
+  color: rgba(245,245,247,0.25);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.vitpat a:hover { color: rgba(245,245,247,0.5); }
+
+
+.footer-links {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 20px;
+}
+.footer-links .privacy-link { margin-top: 0; }
+.footer-sep {
+  font-size: 0.65rem;
+  color: rgba(245,245,247,0.2);
+}
+
+
+
+
+
+
+
+</style>
+</head>
+<body>
+
+
+<div class="card" id="card">
+
+  <div class="vote-heading">
+    <span class="vote-heading-icon">⚓</span>
+    <h1 class="vote-heading-text">Jeden klik<br><span>promy płyną dalej</span></h1>
+  </div>
+
+<div class="rule"></div>
+
+  <p class="tagline">Jeśli chcesz, żeby promy dalej pływały przez Wisłę, oddaj swój głos.</p>
+
+  <div class="projects">
+    <div class="project-row">
+      <div>
+        <div class="project-name">Przeprawa promowa przez Wisłę</div>
+        <div class="project-nr">Projekt nr 22</div>
+      </div>
+    </div>
+    <div class="project-row">
+      <div>
+        <div class="project-name">Prom na Kanale Żerańskim</div>
+        <div class="project-nr">Projekt nr 8</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="countdown" class="countdown">
+    <div class="countdown-unit"><span class="countdown-num" id="cd-days">--</span><span class="countdown-label">dni</span></div>
+    <div class="countdown-unit"><span class="countdown-num" id="cd-hours">--</span><span class="countdown-label">godz</span></div>
+    <div class="countdown-unit"><span class="countdown-num" id="cd-mins">--</span><span class="countdown-label">min</span></div>
+    <div class="countdown-unit"><span class="countdown-num" id="cd-secs">--</span><span class="countdown-label">sek</span></div>
+  </div>
+
+  <a class="vote-btn" href="https://bo.um.warszawa.pl" target="_blank" rel="noopener">
+    <svg width="17" height="17" viewBox="0 0 17 17" fill="none">
+      <path d="M8.5 1.5L10.7 6.8H16.2L11.8 9.9L13.5 15.2L8.5 12L3.5 15.2L5.2 9.9L0.8 6.8H6.3Z"
+            stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" fill="rgba(5,15,28,0.2)"/>
+    </svg>
+    Głosuj na Projekty
+  </a>
+  
+  
+  
+  <div class="instr-block">
+    <p class="instr-title">Instrukcja głosowania</p>
+    <ul class="instr-list">
+      <li class="instr-row"><span class="instr-n">1</span><span class="instr-text">Kliknij <b>„Głosuj na projekt"</b> powyżej</span></li>
+      <li class="instr-row"><span class="instr-n">2</span><span class="instr-text">Na stronie kliknij <b>„Zagłosuj"</b> i wpisz swój <b>e-mail</b></span></li>
+      <li class="instr-row"><span class="instr-n">3</span><span class="instr-text">Kliknij <b>link aktywacyjny</b> który przyszedł na Twoją skrzynkę</span></li>
+      <li class="instr-row"><span class="instr-n">4</span><span class="instr-text">W <b>Projektach miejskich</b> zaznacz <b>Przeprawa promowa przez Wisłę</b> nr 22</span></li>
+      <li class="instr-row"><span class="instr-n">5</span><span class="instr-text">W <b>Projektach dzielnicowych</b> wybierz <b>Białołęka</b> i zaznacz <b>Prom na Kanale Żerańskim</b> nr 8</span></li>
+      <li class="instr-row"><span class="instr-n">6</span><span class="instr-text">Wpisz <b>dane osobowe</b>, potwierdź i gotowe</span></li>
+    </ul>
+  </div>
+  <div class="footer-links">
+    <a class="privacy-link" href="#privacyOverlay" onclick="var e=document.getElementById('privacyOverlay');e.style.display='flex';document.body.style.overflow='hidden';return false;">Polityka prywatności</a>
+    <span class="footer-sep">·</span>
+    <a class="privacy-link" href="#regulaminOverlay" onclick="var e=document.getElementById('regulaminOverlay');e.style.display='flex';document.body.style.overflow='hidden';return false;">Regulamin</a>
+  </div>
+  <p class="vitpat">Created by <a href="https://vitpatweb.pl" target="_blank" rel="noopener">VitPat Web</a></p>
+
+</div>
+
+
+<!-- Privacy overlay -->
+<div class="privacy-overlay" id="privacyOverlay">
+    <div class="privacy-modal">
+      <button class="privacy-close" onclick="this.closest('.privacy-overlay').style.display='none';document.body.style.overflow='';">✕</button>
+      <h2>Polityka Prywatności</h2>
+
+      <h3>1. Informacje ogólne</h3>
+      <p>Niniejsza strona internetowa nie zbiera, nie przechowuje ani nie przetwarza danych osobowych użytkowników.</p>
+
+      <h3>2. Brak formularzy i kont użytkowników</h3>
+      <p>Strona nie udostępnia formularzy kontaktowych, systemu rejestracji, logowania ani innych funkcji wymagających podawania danych osobowych.</p>
+
+      <h3>3. Pliki cookies</h3>
+      <p>Strona może wykorzystywać wyłącznie niezbędne pliki cookies wymagane do prawidłowego działania serwisu. Pliki te nie służą do identyfikacji użytkowników ani do celów marketingowych. Użytkownik może zarządzać nimi poprzez ustawienia swojej przeglądarki.</p>
+
+      <h3>4. Narzędzia zewnętrzne</h3>
+      <p>Strona nie korzysta z narzędzi analitycznych, reklamowych ani innych usług służących do śledzenia aktywności użytkowników.</p>
+
+      <h3>5. Zmiany w polityce prywatności</h3>
+      <p>Właściciel strony zastrzega sobie prawo do aktualizacji niniejszej Polityki Prywatności. Wszelkie zmiany będą publikowane na tej stronie.</p>
+
+      <h3>6. Kontakt</h3>
+      <p>W sprawach związanych z funkcjonowaniem strony: <a href="mailto:kontakt@vitpatweb.pl">kontakt@vitpatweb.pl</a></p>
+    </div>
+  </div>
+
+<div class="privacy-overlay" id="regulaminOverlay">
+    <div class="privacy-modal">
+      <button class="privacy-close" onclick="this.closest('.privacy-overlay').style.display='none';document.body.style.overflow='';">✕</button>
+      <h2>Regulamin strony</h2>
+
+      <h3>§1. Postanowienia ogólne</h3>
+      <p>Niniejszy regulamin określa zasady korzystania ze strony internetowej prowadzonej przez miłośników żeglugi wiślańskiej.</p>
+
+      <h3>§2. Cel strony</h3>
+      <p>Strona ma charakter informacyjny i służy wyłącznie do przekierowania użytkowników na platformę Budżetu Obywatelskiego Miasta Stołecznego Warszawy w celu oddania głosu na projekty związane z żeglugą wiślańską.</p>
+
+      <h3>§3. Zasady korzystania</h3>
+      <p>Korzystanie ze strony jest bezpłatne i dobrowolne. Strona nie wymaga rejestracji ani podawania danych osobowych. Użytkownik zobowiązuje się do korzystania ze strony zgodnie z obowiązującym prawem i dobrymi obyczajami.</p>
+
+      <h3>§4. Dane osobowe</h3>
+      <p>Strona nie zbiera, nie przechowuje ani nie przetwarza danych osobowych użytkowników. Dane podawane w procesie głosowania są przetwarzane wyłącznie przez platformę bo.um.warszawa.pl.</p>
+
+      <h3>§5. Odpowiedzialność</h3>
+      <p>Właściciel strony nie ponosi odpowiedzialności za działanie zewnętrznej platformy bo.um.warszawa.pl, w tym za przebieg i wyniki głosowania.</p>
+
+      <h3>§6. Własność intelektualna</h3>
+      <p>Wszelkie treści, grafiki i logotypy zamieszczone na stronie stanowią własność autorów strony i są chronione prawem autorskim.</p>
+
+      <h3>§7. Kontakt</h3>
+      <p>W sprawach związanych z funkcjonowaniem strony: <a href="mailto:kontakt@vitpatweb.pl">kontakt@vitpatweb.pl</a></p>
+    </div>
+  </div>
+
+
+<script>
+(function(){
+  var e = new Date(2026,5,15,23,59,59).getTime();
+  function t(){
+    var d = e - Date.now();
+    if(d<=0){
+      var el = document.getElementById('countdown');
+      if(el) el.innerHTML = '<p class="countdown-ended">Głosowanie zakończone</p>';
+      return;
+    }
+    document.getElementById('cd-days').textContent  = ('0'+Math.floor(d/864e5)).slice(-2);
+    document.getElementById('cd-hours').textContent = ('0'+Math.floor(d%864e5/36e5)).slice(-2);
+    document.getElementById('cd-mins').textContent  = ('0'+Math.floor(d%36e5/6e4)).slice(-2);
+    document.getElementById('cd-secs').textContent  = ('0'+Math.floor(d%6e4/1e3)).slice(-2);
+  }
+  t();
+  setInterval(t, 1000);
+})();
+</script>
+</body>
+</html>
